@@ -1,0 +1,6 @@
+on:
+    workflow_dispatch:
+    push:
+jobs:
+    zerotier:
+        runs-on: ubuntu-latest
