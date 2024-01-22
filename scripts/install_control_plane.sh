@@ -21,6 +21,8 @@ sudo apt-get update
 # Install and configure the CRI-O container runtime
 
 sudo -i
+
+
 export OS=xUbuntu_20.04
 export VERSION=1.22
 
