@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aws-apigateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-apigateway
+  namespace: aws-apigateway
+spec:
+  selector:
+    matchLabels:
+      app: aws-apigateway
+  template:
+    metadata:
+      labels:
+        app: aws-apigateway
+    spec:
+      containers:
+      - name: aws-apigateway
+        image: k8s.gcr.io/e2e-test-images/echoserver:2.5
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aws-apigateway
+  namespace: aws-apigateway
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+  type: LoadBalancer
+  selector:
+    app: aws-apigateway
