@@ -27,7 +27,7 @@ jobs:
         
       - name: Terraform Init
         working-directory: Production-Kubernetes/EKS/
-        run: terraform init
+        run: terraform init -backend-config "bucket=production-kubernetes-fadyio" -backend-config "key=eks-production.tfstate"
 
       - name: Terraform Format
         working-directory: Production-Kubernetes/EKS/
