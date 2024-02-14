@@ -1,0 +1,42 @@
+name: 'EKS Deployment Production'
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.EKS_PRODUCTION_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        
+      - name: Terraform Init
+        working-directory: Production-Kubernetes/EKS/
+        run: terraform init
+
+      - name: Terraform Format
+        working-directory: Production-Kubernetes/EKS/
+        run: terraform fmt
+
+      - name: Terraform Plan
+        working-directory: Production-Kubernetes/EKS/
+        run: terraform plan -var="k8sVersion=1.28"
+
+      - name: Terraform Apply
+        working-directory: Production-Kubernetes/EKS/
+        run: terraform apply -var="k8sVersion=1.28" -auto-approve
