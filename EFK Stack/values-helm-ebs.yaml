@@ -1,0 +1,19 @@
+# Shrinking the JVM to 128m
+esJavaOpts: "-Xms128m -Xms128m"
+
+# Allocate smaller memory per pod
+resources:
+  requests:
+    cpu: "1000m"
+    memory: "512Mi"
+  limits:
+    cpu: "1000m"
+    memory: "512Mi"
+    
+# Request storage
+volumeClaimTemplates:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: default
+  resources:
+    requests:
+      storage: 100Mi

@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: alertmanager-config
+  namespace: monitoring
+spec:
+  route:
+    - matchers:
+        name: HostHighCpuUsage
+        receiver: default-receiver
+    - matchers:
+        name: KubernetesPodCrashLooping
+        receiver: default-receiver
+  receivers:
+  - name: default-receiver
+    emailConfigs:
+    - to: 'fady@fadyio.com'
+      from: 'me@fadyio.com'
+      smarthost: 'smtp.gmail.com:587'
+      authUsername: 'fady@fadyio.com'
+      authIdentity: 'fady@fadyio.com'
+      authPassword:
+        name: gmail-auth
+        key: password

@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: host-high-cpu-usage
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack
+    release: monitoring
+spec:
+  groups:
+    - name: host-high-cpu-usage
+      rules:
+      - alert: HostHighCpuUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 50
+        for: 2m
+        labels:
+          severity: warning
+          namespace: monitoring
+        annotations:
+          description: 'High CPU usage on {{ $labels.instance }} is {{ humanizePercentage $value }}'
+          summary: 'High CPU usage on {{ $labels.instance }}'
+          runbook_url: 'https://fadyio.com/runbook'
+      - alert: KubernetesPodCrashLooping
+        expr: kube_pod_container_status_restarts_total > 5
+        for: 0m
+        labels:
+          severity: critical
+          namespace: monitoring
+        annotations:
+          description: 'Pod {{ $labels.pod }} is crashlooping \n Value: {{ $value }}'
+          summary: 'Pod {{ $labels.pod }} is crashlooping'
+          runbook_url: 'https://fadyio.com/runbook'
